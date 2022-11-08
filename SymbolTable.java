@@ -1,126 +1,150 @@
 public class SymbolTable<Key extends Comparable<Key>, Value> {
-    private Node root = new Node(null, null, null, null);
+    private Node root;
     
     
     public void put(Key k, Value v) {
-        root = root.put(root, k, v);
+        root = put(root, k, v);
+        System.out.println("public root (key, val): ");
+        System.out.println(root.key);
+        System.out.println(root.val);
+        System.out.println("public new (key, value): ");
+        System.out.println(k);
+        System.out.println(v);
     }
 
     public Value get(Key k) {
-        return (Value) root.get(root, k);
+        return get(root, k);
     }
 
     public Value min() {
-        return (Value) root.min(root).val;
+        return min(root).val;
     }
 
     public Value max() {
-        return (Value) root.max(root).val;
+        return max(root).val;
     }
 
     public Value floor(Key k) {
-        Node x = root.floor(root, k);
+        Node x = floor(root, k);
         if (x==null) {
             return null;
         }
-        return (Value) x.val;
+        return x.val;
     }
 
     public Value ceiling(Key k) {
-        Node x = root.ceiling(root, k);
+        Node x = ceiling(root, k);
         if (x==null) {
             return null;
         } 
-        return (Value) x.val;
+        return x.val;
     }
 
-    private class Node<Key extends Comparable<Key>, Value> {
-        private Key ky;
+    private Node put(Node x, Key k, Value v) {
+        if (x == null) {
+            System.out.println("private new node (key, value): ");
+            System.out.println(k);
+            System.out.println(v);
+            return new Node(k, v);
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp < 0) {
+            System.out.println("left");
+            put(x.left, k, v);
+        }
+        if (cmp > 0) {
+            System.out.println("right");
+            put(x.right, k, v);
+        }
+        if(cmp == 0) {
+            System.out.println("replace");
+            x.val = v;
+        }
+        System.out.println("private return x (key, value): ");
+        System.out.println(k);
+        System.out.println(v);
+        return x;
+    }
+
+    private Value get(Node x, Key k) {
+        if (x == null) {
+            return null;
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp < 0) {
+            return get(x.left, k);
+        }
+        if (cmp > 0) {
+            return get(x.right, k); 
+        }
+        return x.val;
+    }
+
+    private Node floor(Node x, Key k) {
+        if (x == null) {
+            return null;
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp < 0) {
+            return floor(x.left, k);
+        }
+        if (cmp > 0) {
+            Node t = floor(x.right, k);
+            if (t != null) {
+                return t;
+            }
+        }
+        return x;
+    }
+
+    private Node ceiling(Node x, Key k) {
+        if (x == null) {
+            return null;
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp > 0) {
+            return ceiling(x.right, k);
+        }
+        if (cmp < 0) {
+            Node t = ceiling(x.left, k);
+            if (t != null) {
+                return t;
+            }
+        }
+        return x;
+    }
+
+    private Node min(Node x) {
+        if (x.left == null) {
+            return x;
+        }
+        return min(x.left);
+    }
+
+    private Node max(Node x) {
+        if (x.right == null) {
+            return x;
+        }
+        return max(x.right);
+    }
+
+    public String toString() {
+        String result = "";
+        result += root.val + " " + root.left.val;
+        return result; 
+    }
+
+    private class Node {
+        private Key key;
         private Value val;
         private Node left, right;
+        private int size;
         
-        private Node(Key k, Value v, Node l, Node r) {
-            ky = k;
+        private Node(Key k, Value v) {
+            key = k;
             val = v;
-        }
-
-        private Node put(Node x, Key k, Value v) {
-            if (x == null) {
-                return new Node(k, v, null, null);
-            }
-            int cmp = k.compareTo(x.ky);
-            if (cmp < 0) {
-                put(x.left, k, v);
-            }
-            if (cmp > 0) {
-                put(x.right, k, v);
-            }
-            if(cmp == 0) {
-                x.val = v;
-            }
-            return x;
-        }
-
-        private Value get(Node x, Key k) {
-            if (x == null) {
-                return null;
-            }
-            int cmp = k.compareTo(x.ky);
-            if (cmp < 0) {
-                return get(x.left, k);
-            }
-            if (cmp > 0) {
-                return get(x.right, k); 
-            }
-            return (Value) x.val;
-        }
-
-        private Node floor(Node x, Key k) {
-            if (x == null) {
-                return null;
-            }
-            int cmp = k.compareTo(x.ky);
-            if (cmp < 0) {
-                return floor(x.left, k);
-            }
-            if (cmp > 0) {
-                Node t = floor(x.right, k);
-                if (t != null) {
-                    return t;
-                }
-            }
-            return x;
-        }
-
-        private Node ceiling(Node x, Key k) {
-            if (x == null) {
-                return null;
-            }
-            int cmp = k.compareTo(x.ky);
-            if (cmp > 0) {
-                return ceiling(x.right, k);
-            }
-            if (cmp < 0) {
-                Node t = ceiling(x.left, k);
-                if (t != null) {
-                    return t;
-                }
-            }
-            return x;
-        }
-
-        private Node min(Node x) {
-            if (x.left == null) {
-                return x;
-            }
-            return min(x.left);
-        }
-
-        private Node max(Node x) {
-            if (x.right == null) {
-                return x;
-            }
-            return max(x.right);
+            left = null;
+            right = null;
         }
     }
 
@@ -129,12 +153,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         
         table.put("S", 1);
         table.put("E", 2);
-        table.put("X", 3);
-        table.put("A", 4);
-        table.put("R", 5);
-        table.put("C", 6);
-        table.put("H", 6);
-        System.out.println(table.max());
-        System.out.println(table.min());
+        System.out.println("testing");
+        System.out.println(table.toString());
     }
 }
