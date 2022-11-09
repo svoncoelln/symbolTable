@@ -48,6 +48,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
             return new Node(k, v);
         }
         int cmp = k.compareTo(x.key);
+        System.out.println("cmp: " + cmp);
+        x.size++;
         if (cmp < 0) {
             System.out.println("left");
             put(x.left, k, v);
@@ -130,7 +132,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
 
     public String toString() {
         String result = "";
-        result += root.val + " " + root.left.val;
+        result += root.key + " left " + root.left.key + " right " + root.right.key;
         return result; 
     }
 
