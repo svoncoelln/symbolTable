@@ -1,15 +1,8 @@
 public class SymbolTable<Key extends Comparable<Key>, Value> {
     private Node root;
     
-    
     public void put(Key k, Value v) {
         root = put(root, k, v);
-        System.out.println("public root (key, val): ");
-        System.out.println(root.key);
-        System.out.println(root.val);
-        System.out.println("public new (key, value): ");
-        System.out.println(k);
-        System.out.println(v);
     }
 
     public Value get(Key k) {
@@ -40,31 +33,29 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x.val;
     }
 
+    public Key select(int i) {
+        return select(root, i).key;
+    }
+
+    public int size() {
+        return size(root);
+    }
+
     private Node put(Node x, Key k, Value v) {
         if (x == null) {
-            System.out.println("private new node (key, value): ");
-            System.out.println(k);
-            System.out.println(v);
-            return new Node(k, v);
+            return new Node(k, v, 1);
         }
         int cmp = k.compareTo(x.key);
-        System.out.println("cmp: " + cmp);
-        x.size++;
         if (cmp < 0) {
-            System.out.println("left");
-            put(x.left, k, v);
+            x.left = put(x.left, k, v);
         }
-        if (cmp > 0) {
-            System.out.println("right");
-            put(x.right, k, v);
+        else if (cmp > 0) {
+            x.right = put(x.right, k, v);
         }
-        if(cmp == 0) {
-            System.out.println("replace");
+        else if(cmp == 0) {
             x.val = v;
         }
-        System.out.println("private return x (key, value): ");
-        System.out.println(k);
-        System.out.println(v);
+        x.size = size(x.left) + size(x.right) + 1;
         return x;
     }
 
@@ -130,10 +121,25 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return max(x.right);
     }
 
-    public String toString() {
-        String result = "";
-        result += root.key + " left " + root.left.key + " right " + root.right.key;
-        return result; 
+    private Node select(Node x, int i) {
+        if (x==null) {
+            return null;
+    }
+        int s = size(x.left);
+        if (s > i) {  
+            return select(x.left, i);
+    }
+    if (s < i) {
+        return select(x.right, (i-s-1));
+    }
+        return x;
+    }
+    
+    private int size(Node x) {
+        if (x==null) {
+            return 0;
+        }
+        return x.size;
     }
 
     private class Node {
@@ -142,7 +148,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         private Node left, right;
         private int size;
         
-        private Node(Key k, Value v) {
+        private Node(Key k, Value v, int size) {
             key = k;
             val = v;
             left = null;
@@ -151,11 +157,15 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     }
 
     public static void main(String[] args) {
-        SymbolTable<String, Integer> table = new SymbolTable<>();
+        SymbolTable<String, Integer> table = new SymbolTable<String, Integer>();
         
         table.put("S", 1);
         table.put("E", 2);
-        System.out.println("testing");
-        System.out.println(table.toString());
+        table.put("A", 3);
+        table.put("R", 4);
+        table.put("C", 5);
+        table.put("H", 6);
+        table.put("E", 7);
+        table.put("X", 8);
     }
 }
