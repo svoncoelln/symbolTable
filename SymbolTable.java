@@ -52,10 +52,13 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         else if (cmp > 0) {
             x.right = put(x.right, k, v);
         }
-        else if(cmp == 0) {
+        else {
             x.val = v;
         }
-        x.size = size(x.left) + size(x.right) + 1;
+        x.size = 1 + size(x.left) + size(x.right);
+        System.out.println("left size: " + size(x.left));
+        System.out.println("right size: " + size(x.right));
+        System.out.println("size: " + x.size);
         return x;
     }
 
@@ -160,12 +163,27 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         SymbolTable<String, Integer> table = new SymbolTable<String, Integer>();
         
         table.put("S", 1);
+        System.out.println(table.size());
+        System.out.println();
         table.put("E", 2);
+        System.out.println(table.size());
+        System.out.println();
         table.put("A", 3);
+        System.out.println(table.size());
+        System.out.println();
         table.put("R", 4);
+        System.out.println(table.size());
+        System.out.println();
         table.put("C", 5);
+        System.out.println(table.size());
+        System.out.println();
         table.put("H", 6);
+        System.out.println(table.size());
+        System.out.println();
         table.put("E", 7);
+        System.out.println(table.size());
+        System.out.println();
         table.put("X", 8);
+        System.out.println(table.size());
     }
 }
