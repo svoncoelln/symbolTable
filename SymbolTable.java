@@ -43,7 +43,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
 
     private Node put(Node x, Key k, Value v) {
         if (x == null) {
-            return new Node(k, v, 1);
+            return new Node(k, v);
         }
         int cmp = k.compareTo(x.key);
         if (cmp < 0) {
@@ -56,9 +56,6 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
             x.val = v;
         }
         x.size = 1 + size(x.left) + size(x.right);
-        System.out.println("left size: " + size(x.left));
-        System.out.println("right size: " + size(x.right));
-        System.out.println("size: " + x.size);
         return x;
     }
 
@@ -151,11 +148,9 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         private Node left, right;
         private int size;
         
-        private Node(Key k, Value v, int size) {
+        private Node(Key k, Value v) {
             key = k;
             val = v;
-            left = null;
-            right = null;
         }
     }
 
