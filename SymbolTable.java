@@ -34,7 +34,12 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     }
 
     public Key select(int i) {
-        return select(root, i).key;
+        if (select(root, i) == null) {
+            return null;
+        }
+        else {
+            return select(root, i).key;
+        } 
     }
 
     public int size() {
@@ -146,7 +151,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         private Key key;
         private Value val;
         private Node left, right;
-        private int size;
+        private int size = 1;
         
         private Node(Key k, Value v) {
             key = k;
@@ -158,27 +163,13 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         SymbolTable<String, Integer> table = new SymbolTable<String, Integer>();
         
         table.put("S", 1);
-        System.out.println(table.size());
-        System.out.println();
         table.put("E", 2);
-        System.out.println(table.size());
-        System.out.println();
         table.put("A", 3);
-        System.out.println(table.size());
-        System.out.println();
         table.put("R", 4);
-        System.out.println(table.size());
-        System.out.println();
         table.put("C", 5);
-        System.out.println(table.size());
-        System.out.println();
         table.put("H", 6);
-        System.out.println(table.size());
-        System.out.println();
         table.put("E", 7);
-        System.out.println(table.size());
-        System.out.println();
         table.put("X", 8);
-        System.out.println(table.size());
+        table.put("T", 9);
     }
 }
