@@ -5,47 +5,6 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         root = put(root, k, v);
     }
 
-    public Value get(Key k) {
-        return get(root, k);
-    }
-
-    public Value min() {
-        return min(root).val;
-    }
-
-    public Value max() {
-        return max(root).val;
-    }
-
-    public Value floor(Key k) {
-        Node x = floor(root, k);
-        if (x==null) {
-            return null;
-        }
-        return x.val;
-    }
-
-    public Value ceiling(Key k) {
-        Node x = ceiling(root, k);
-        if (x==null) {
-            return null;
-        } 
-        return x.val;
-    }
-
-    public Key select(int i) {
-        if (select(root, i) == null) {
-            return null;
-        }
-        else {
-            return select(root, i).key;
-        } 
-    }
-
-    public int size() {
-        return size(root);
-    }
-
     private Node put(Node x, Key k, Value v) {
         if (x == null) {
             return new Node(k, v);
@@ -64,6 +23,10 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x;
     }
 
+    public Value get(Key k) {
+        return get(root, k);
+    }
+
     private Value get(Node x, Key k) {
         if (x == null) {
             return null;
@@ -74,6 +37,36 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         }
         if (cmp > 0) {
             return get(x.right, k); 
+        }
+        return x.val;
+    }
+
+    public Value min() {
+        return min(root).val;
+    }
+
+    private Node min(Node x) {
+        if (x.left == null) {
+            return x;
+        }
+        return min(x.left);
+    }
+
+    public Value max() {
+        return max(root).val;
+    }
+
+    private Node max(Node x) {
+        if (x.right == null) {
+            return x;
+        }
+        return max(x.right);
+    }
+
+    public Value floor(Key k) {
+        Node x = floor(root, k);
+        if (x==null) {
+            return null;
         }
         return x.val;
     }
@@ -95,6 +88,14 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x;
     }
 
+    public Value ceiling(Key k) {
+        Node x = ceiling(root, k);
+        if (x==null) {
+            return null;
+        } 
+        return x.val;
+    }
+
     private Node ceiling(Node x, Key k) {
         if (x == null) {
             return null;
@@ -112,18 +113,13 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x;
     }
 
-    private Node min(Node x) {
-        if (x.left == null) {
-            return x;
+    public Key select(int i) {
+        if (select(root, i) == null) {
+            return null;
         }
-        return min(x.left);
-    }
-
-    private Node max(Node x) {
-        if (x.right == null) {
-            return x;
-        }
-        return max(x.right);
+        else {
+            return select(root, i).key;
+        } 
     }
 
     private Node select(Node x, int i) {
@@ -139,13 +135,37 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     }
         return x;
     }
-    
+
+    private int rank(Key k) {
+        return rank(root, k);
+    }
+
+    private int rank(Node x, Key k) {
+        if(x==null) {
+            return 0;
+        }
+        int cmp = k.compareTo(x.key);
+        if(cmp < 0) {
+            return rank(x.left, k);
+        }
+        if (cmp > 0) {
+            return size(x.left) + 1 + rank(x.right, k);
+        }
+        return size(x.left) + 1;
+    }
+
+    public int size() {
+        return size(root);
+    }
+ 
     private int size(Node x) {
         if (x==null) {
             return 0;
         }
         return x.size;
     }
+
+
 
     private class Node {
         private Key key;
