@@ -1,5 +1,7 @@
 public class SymbolTable<Key extends Comparable<Key>, Value> {
     private Node root;
+
+    public SymbolTable() {}
     
     public void put(Key k, Value v) {
         root = put(root, k, v);
@@ -125,14 +127,14 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     private Node select(Node x, int i) {
         if (x==null) {
             return null;
-    }
+        }
         int s = size(x.left);
         if (s > i) {  
             return select(x.left, i);
-    }
-    if (s < i) {
-        return select(x.right, (i-s-1));
-    }
+        }
+        if (s < i) {
+            return select(x.right, (i-s-1));
+        }
         return x;
     }
 
@@ -141,17 +143,81 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     }
 
     private int rank(Node x, Key k) {
-        if(x==null) {
+        if (x==null) {
             return 0;
         }
         int cmp = k.compareTo(x.key);
-        if(cmp < 0) {
+            if(cmp < 0) {
             return rank(x.left, k);
         }
         if (cmp > 0) {
             return size(x.left) + 1 + rank(x.right, k);
         }
         return size(x.left) + 1;
+    }
+
+    public void delMin() {
+        root = delMin(root);
+    }
+
+    private Node delMin(Node x) {
+        if (x==null) {
+            return null;
+        }
+        if (x.left==null) {
+            return x.right;
+        }
+        x.left = delMin(x.left);
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    public void delMax() {
+        root = delMax(root);
+    }
+
+    private Node delMax(Node x) {
+        if(x==null) {
+            return null;
+        }
+        if (x.right==null) {
+            return x.left;
+        }
+        x.right = delMax(x.right);
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    public void delete(Key k) {
+        root = delete(root, k);
+    }
+
+    private Node delete(Node x, Key k) {
+        if(x==null) {
+            return null;
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp < 0) {
+            x.left = delete(x.left, k);
+        }
+        else if (cmp > 0) {
+            x.right = delete(x.right, k);
+        }
+        else {
+            if (x.left == null) {
+                return x.right;
+            }
+            if (x.right == null) {
+                return x.left;
+            }
+            Node t = x;
+            x = min(t.right);
+            delMin(t.right);
+            x.left = t.left;
+            x.right = t.right;
+        }
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
     }
 
     public int size() {
@@ -165,8 +231,28 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x.size;
     }
 
+    public boolean contains(Key k) {
+        return contains(root, k);
+    }
 
-
+    private boolean contains(Node x, Key k) {
+        if (x == null) {
+            return false;
+        }
+        int cmp = k.compareTo(x.key);
+        if (cmp < 0) {
+            return contains(x.left, k);
+        }
+        if (cmp > 0) {
+            return contains(x.right, k); 
+        }
+        return true;
+    }
+    
+    public boolean isEmpty() {
+        return root == null;
+    }
+    
     private class Node {
         private Key key;
         private Value val;
@@ -191,5 +277,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         table.put("E", 7);
         table.put("X", 8);
         table.put("T", 9);
+
+        System.out.println(table.select(table.rank("R")));
+
     }
 }
