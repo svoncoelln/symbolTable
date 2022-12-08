@@ -43,8 +43,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x.val;
     }
 
-    public Value min() {
-        return min(root).val;
+    public Key min() {
+        return min(root).key;
     }
 
     private Node min(Node x) {
@@ -54,8 +54,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return min(x.left);
     }
 
-    public Value max() {
-        return max(root).val;
+    public Key max() {
+        return max(root).key;
     }
 
     private Node max(Node x) {
@@ -65,12 +65,12 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return max(x.right);
     }
 
-    public Value floor(Key k) {
+    public Key floor(Key k) {
         Node x = floor(root, k);
         if (x==null) {
             return null;
         }
-        return x.val;
+        return x.key;
     }
 
     private Node floor(Node x, Key k) {
@@ -90,12 +90,12 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         return x;
     }
 
-    public Value ceiling(Key k) {
+    public Key ceiling(Key k) {
         Node x = ceiling(root, k);
         if (x==null) {
             return null;
         } 
-        return x.val;
+        return x.key;
     }
 
     private Node ceiling(Node x, Key k) {
@@ -153,7 +153,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         if (cmp > 0) {
             return size(x.left) + 1 + rank(x.right, k);
         }
-        return size(x.left) + 1;
+        return size(x.left);
     }
 
     public void delMin() {
@@ -225,7 +225,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
     }
  
     private int size(Node x) {
-        if (x==null) {
+        if (x == null) {
             return 0;
         }
         return x.size;
@@ -278,7 +278,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value> {
         table.put("X", 8);
         table.put("T", 9);
 
-        System.out.println(table.select(table.rank("R")));
+        System.out.println(table.min());
+        System.out.println(table.max());
 
     }
 }
